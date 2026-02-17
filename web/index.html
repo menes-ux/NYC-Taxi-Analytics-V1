@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Taxi Analytics | Urban Mobility Intelligence</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.30.0/index.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1 class="logo">NYC TAXI</h1>
+                <span class="tagline">URBAN MOBILITY</span>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-view="overview">Overview</button>
+                <button class="nav-tab" data-view="trips">Trip Table</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Container for dashboard creation -->
+    <div class="dashboard">
+        
+        <!-- Control Panel -->
+        <aside class="control-panel">
+            <div class="control-section">
+                <h3>Filters</h3>
+                
+                <div class="control-group">
+                    <label for="date-range">Date Range</label>
+                    <div class="date-inputs">
+                        <input type="date" id="start-date" class="input-field">
+                        <span class="date-separator">→</span>
+                        <input type="date" id="end-date" class="input-field">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="borough-select">Borough</label>
+                    <select id="borough-select" class="select-field">
+                        <option value="">All Boroughs</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="time-window">Time Window</label>
+                    <select id="time-window" class="select-field">
+                        <option value="">All Times</option>
+                        <option value="morning_rush">Morning Rush</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="evening_rush">Evening Rush</option>
+                        <option value="off_peak">Off Peak</option>
+                        <option value="night">Night</option>
+                    </select>
+                </div>
+
+                <button id="apply-filters" class="btn-primary">Apply Filters</button>
+                <button id="reset-filters" class="btn-secondary">Reset</button>
+            </div>
+
+
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Overview View -->
+            <div id="overview-view" class="view active">
+                <section class="section-header">
+                    <h2>New York City Overview</h2>
+                    <p>Comprehensive analytics dashboard for NYC taxi trip data and urban mobility patterns</p>
+                </section>
+                
+                <section class="hero-metrics">
+                    <div class="metric-card large" id="trips-metric">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <div class="metric-icon"><i class="fas fa-taxi"></i></div>
+                        <div class="metric-content">
+                            <h2 class="metric-value" id="total-trips-count">0</h2>
+                            <p class="metric-label">Total Trips Analyzed</p>
+                        </div>
+                    </div>
+                    <div class="metric-card" id="distance-metric">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <div class="metric-icon"><i class="fas fa-map-location-dot"></i></div>
+                        <div class="metric-content">
+                            <h3 class="metric-value" id="total-distance">0 mi</h3>
+                            <p class="metric-label">Total Distance</p>
+                        </div>
+                    </div>
+                    <div class="metric-card" id="revenue-metric">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-content">
+                            <h3 class="metric-value" id="total-revenue-display">$0</h3>
+                            <p class="metric-label">Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="metric-card" id="speed-metric">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <div class="metric-icon"><i class="fas fa-gauge-high"></i></div>
+                        <div class="metric-content">
+                            <h3 class="metric-value" id="avg-efficiency">0 mph</h3>
+                            <p class="metric-label">Average Speed</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="chart-grid">
+                    <div class="chart-container" id="hourly-chart-container">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <h3 class="chart-title">Trip Volume by Hour</h3>
+                        <canvas id="hourly-chart"></canvas>
+                    </div>
+                    <div class="chart-container" id="borough-chart-container">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <h3 class="chart-title">Borough Distribution</h3>
+                        <canvas id="borough-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-grid">
+                    <div class="chart-container full-width" id="daily-trend-container">
+                        <div class="card-loader active"><div class="mini-spinner"></div></div>
+                        <h3 class="chart-title">All Trip Trend</h3>
+                        <canvas id="daily-trend-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Trips View -->
+            <div id="trips-view" class="view">
+                <section class="section-header">
+                    <h2>Recent Trips</h2>
+                    <p>Detailed view of individual taxi trips with pagination</p>
+                </section>
+
+                <div class="data-table-container" id="trips-table-container">
+                    <div class="card-loader active"><div class="mini-spinner"></div></div>
+                    <table class="data-table" id="trips-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pickup</th>
+                                <th>Dropoff</th>
+                                <th>Distance</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trips-table-body">
+                            <!-- Trips Table Body -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-controls" id="pagination-wrapper">
+                    <!-- pagination  -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
