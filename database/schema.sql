@@ -52,4 +52,16 @@ CREATE INDEX idx_trips_pu_location ON trips (pu_location_id);
 
 CREATE INDEX idx_trips_do_location ON trips (do_location_id);
 
+-- This is Trip Summary Table
+CREATE TABLE trip_summary (
+    summary_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT,
+    hour INTEGER,
+    borough TEXT,
+    trip_count INTEGER,
+    total_amount REAL,
+    total_distance REAL,
+    total_duration_hrs REAL
+);
+
 CREATE INDEX idx_summary_lookup ON trip_summary (date, borough);
