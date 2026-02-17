@@ -111,7 +111,38 @@ def getDailyPattern():
     return jsonify([{"date": d, "count": int(c)} for d, c in value])
 
 
+@app.route("/api/trips")
+def getTrips():
+    """
+        This function will retrieve the trip list and pagination
+    """
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 50, type=int)
 
+    # Total Count from Summary
+    total_q = applyFilters(db.session.query(func.sum(TripSummary.trip_count)), model=TripSummary)
+    total = total_q.scalar() or 0
+
+    # Paginated data from Trips
+    base_query = db.session.query(
+        Trip.trip_id, Trip.pickup_datetime, Trip.dropoff_datetime,
+        Trip.trip_distance, Trip.total_amount
+    )
+    trips_q = applyFilters(base_query, model=Trip).offset((page - 1) * per_page).limit(per_page)
+    trips = trips_q.all()
+
+    return jsonify({
+        "trips": [{
+            "trip_id": t[0],
+            "pickup": t[1].isoformat() if t[1] else None,
+            "dropoff": t[2].isoformat() if t[2] else None,
+            "distance": t[3],
+            "amount": t[4]
+        } for t in trips],
+        "total": total,
+        "page": page,
+        "per_page": per_page
+    })
 
 
 if __name__ == "__main__":
