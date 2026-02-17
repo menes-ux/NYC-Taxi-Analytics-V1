@@ -5,7 +5,16 @@ from flask_cors import CORS
 from config import Config
 from models import db, Trip, Location, TripSummary
 
-app = Flask(__name__)
+import os
+from flask import Flask, jsonify, request, send_from_directory
+
+app = Flask(__name__, 
+            static_folder='../web',
+            static_url_path='')
+
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
 app.config.from_object(Config)
 
 db.init_app(app)
