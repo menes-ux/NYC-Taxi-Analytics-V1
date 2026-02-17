@@ -43,8 +43,10 @@ Follow these steps to set up and run the NYC Taxi Analytics project:
    python api/app.py
    ```
 
-5. **Open the Dashboard:**
-   Open `web/index.html` in your browser. (Ideally using a local server like "Live Server" at `http://127.0.0.1:5500` to avoid CORS issues).
+5. **Open this on the Browser**
+   ```bash
+   http://127.0.0.1:5001
+   ```
 
 
 
