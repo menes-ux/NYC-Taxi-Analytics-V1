@@ -1,5 +1,6 @@
 const API_URL = 'http://127.0.0.1:5001/api';
 
+/*this function fetchs data from API */
 async function fetchAPI(endpoint, params = {}) {
     const url = new URL(API_URL + endpoint);
     Object.keys(params).forEach(key => {
