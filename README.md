@@ -1,17 +1,41 @@
-# Urban Pulse NYC: Urban Mobility Analytics Dashboard 📂
+## NYC Taxi Analytics V1
 
-## Project Overview
-A full-stack enterprise application analyzing New York City Taxi trip data. This system processes raw trip records to uncover urban mobility patterns, served via a REST API and visualized on an interactive frontend dashboard.
+This ALU full-stack Summative project for processing, analyzing, and visualizing New York City yellow taxi trip data from January 2019. It includes data cleaning, a backend API, and an interactive frontend dashboard.
 
-**Dataset:** [NYC Taxi Trip Records](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
 
----
+**TEAM MEMEBERS**
 
-## Team Members & Roles
-- **Data Pipeline Lead:** [Name] — Data Cleaning & Processing  
-- **Database Architect:** [Name] — Schema Design & Optimization  
-- **Backend API Lead:** [Name] — Flask API & Endpoints  
-- **Frontend & Visualization:** [Your Name] — Dashboard & Charts  
-- **UI & Algorithms:** [Name] — Custom Sort Algorithm & UX  
 
----
+
+
+# How to Run the Project
+
+Follow these steps to set up and run the NYC Taxi Analytics project:
+
+1. **Create and Activate a Virtual Environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate 
+   ```
+
+2. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Process and Optimize Data:**
+   Run the unified data parser.
+   ```bash
+   python dsa/data_parser.py
+   ```
+   *Note: This processes ~680MB of data and may take 1-2 minutes.*
+
+4. **Start the Backend API:**
+   ```bash
+   python api/app.py
+   ```
+
+5. **Open the Dashboard:**
+   Open `web/index.html` in your browser. (Ideally using a local server like "Live Server" at `http://127.0.0.1:5500` to avoid CORS issues).
+
+
