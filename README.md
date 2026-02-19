@@ -54,16 +54,22 @@ Follow these steps to set up and run the NYC Taxi Analytics project:
 
 
 
+**Live Demo: Deployed on server**
+```bash
+http://54.167.186.166
+```
+
+
 ## Link to Video
 
-`
+```bash
 https://www.loom.com/share/23af41c945514e43bb0b6d68f6efb3e7
-`
+```
 
 
 ## Team Task sheet link
 
-`
+```bash
 https://docs.google.com/spreadsheets/d/1WY7U-BMD-ZLVjYWVPXSG_qppcNPOEq4HYiUiT_yOo1A/edit?gid=0#gid=0
-`
+```
 
