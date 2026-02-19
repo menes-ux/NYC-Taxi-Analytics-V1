@@ -20,6 +20,10 @@ This ALU full-stack Summative project for processing, analyzing, and visualizing
 
 Follow these steps to set up and run the NYC Taxi Analytics project:
 
+## Add the csv file to root directory
+1. yellow_tripdata_2019-01.csv
+2. taxi_zone_lookup.csv
+
 1. **Create and Activate a Virtual Environment:**
    ```bash
    python -m venv venv
