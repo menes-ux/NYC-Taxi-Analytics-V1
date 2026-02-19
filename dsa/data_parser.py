@@ -34,9 +34,14 @@ def loadTrips():
     chunksize = 100000
     first_chunk = True
     total_rows = 0
+    total_loaded = 0
+    log_path = os.path.join(BASE_DIR, "taxiCleanUpLog.csv")
+    exclusion_counts = {}
+
+    pd.DataFrame(columns=["trip_id", "reason", "value"]).to_csv(log_path, index=False)
 
     print(f"Loading Trips from {file_path}...")
-    
+
     for df in pd.read_csv(file_path, chunksize=chunksize):
         df["trip_id"] = range(total_rows, total_rows + len(df))
         total_rows += len(df)
@@ -50,13 +55,52 @@ def loadTrips():
             "RatecodeID": "rate_code_id"
         }, inplace=True)
 
+        log_entries = []
+        before = len(df)
+
+        df["pickup_datetime"] = pd.to_datetime(df["pickup_datetime"], errors="coerce")
+        df["dropoff_datetime"] = pd.to_datetime(df["dropoff_datetime"], errors="coerce")
+
+        def flagDrop(dataframe, condition, reason, col):
+            flagged = dataframe[condition]
+            for i in flagged.index:
+                log_entries.append({"trip_id": int(dataframe.at[i, "trip_id"]),
+                                    "reason": reason, "value": str(dataframe.at[i, col])})
+            exclusion_counts[reason] = exclusion_counts.get(reason, 0) + len(flagged)
+            return dataframe[~condition]
+
+        df = flagDrop(df, df["pickup_datetime"].dt.year != 2019,
+                           "out_of_range_year", "pickup_datetime")
+
+        df = flagDrop(df, df["trip_distance"] <= 0, "zero_negative_distance", "trip_distance")
+        df = flagDrop(df, df["trip_distance"] > 200, "extreme_distance", "trip_distance")
+
+        df = flagDrop(df, df["fare_amount"] <= 0, "zero_negative_fare", "fare_amount")
+
+        duplicatedColumns = ["pickup_datetime", "dropoff_datetime", "pu_location_id", "do_location_id", "trip_distance", "total_amount"]
+        df = flagDrop(df, df.duplicated(subset=duplicatedColumns, keep="first"), "duplicate_row", "total_amount")
+
+        if log_entries:
+            pd.DataFrame(log_entries).to_csv(log_path, mode="a", header=False, index=False)
+
+        removed = before - len(df)
+        if removed > 0:
+            print(f"    Cleaned: removed {removed} bad rows")
+
         df["borough"] = df["pu_location_id"].map(loc_map)
 
         if_exists = "replace" if first_chunk else "append"
         df.to_sql("trips", engine, if_exists=if_exists, index=False)
         first_chunk = False
-        print(f"Loaded {total_rows} rows...")
+        total_loaded += len(df)
+        print(f"Loaded {total_loaded} clean rows ({total_rows} processed)...")
 
+    total_excluded = sum(exclusion_counts.values())
+    
+    print(f"Total processed: {total_rows}  |  Loaded: {total_loaded}  |  Excluded: {total_excluded}")
+    for reason, count in sorted(exclusion_counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"  {reason}: {count}")
+    print(f"Cleanup log saved to: {log_path}")
     print("Trips Loaded Successfully")
 
 
