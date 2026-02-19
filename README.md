@@ -40,7 +40,7 @@ Follow these steps to set up and run the NYC Taxi Analytics project:
    ```bash
    python dsa/data_parser.py
    ```
-   *Note: This processes ~680MB of data and may take 3-5 minutes.*
+   **Note: This processes ~680MB of data and may take 5-10 minutes depending on your computer and internet speed**
 
 4. **Start the Backend API:**
    ```bash
